@@ -49,12 +49,41 @@ class DrawApp:
         self.lable.config(text='Hãy vẽ một con số để tôi đoán!')
 
     def predict(self):
-        img = self.image.resize((28, 28), Image.LANCZOS)
-        arr = np.array(img) / 255.0
-        arr = arr.reshape(1, 784)
+        arr = self.preprocess()
+        if arr is None:
+            self.lable.config(text='Bạn chưa vẽ gì cả!')
+            return
         pre = model.predict(arr)[0]
         do_tin_cay = model.predict_proba(arr).max() * 100
         self.lable.config(text=f'Predict: {pre} - Độ tin cậy là: {do_tin_cay:.0f}%')
+    
+    def preprocess(self):
+        arr = np.array(self.image)
+
+        ys, xs = np.where(arr>20)
+        if len(xs) == 0:
+            return None
+        x0, x1 = xs.min(), xs.max() + 1
+        y0, y1 = ys.min(), ys.max() + 1
+        digit = self.image.crop((x0, y0, x1, y1))
+
+        w, h = digit.size
+        scale = 20 / max(w, h)
+        nw, nh = max(1, round(w * scale)), max(1, round(h * scale))
+        digit = digit.resize((nw, nh), Image.LANCZOS)
+
+        khung = Image.new('L', (28, 28), 0)
+        khung.paste(digit, ((28 - nw) // 2, (28 - nh)//2))
+
+        a = np.array(khung) / 255.0
+        tong = a.sum()
+        cy = (a.sum(axis = 1) * np.arange(28)).sum() / tong
+        cx = (a.sum(axis = 0) * np.arange(28)).sum() / tong
+        a = np.roll(a, (round(13.5 - cy), round(13.5 - cx)), axis= (0, 1))
+        
+        return a.reshape(1, 784)
+
+
 
 root = tk.Tk()
 app = DrawApp(root)
