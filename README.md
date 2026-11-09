@@ -4,7 +4,7 @@
 
 ## Demo
 
-![Demo](images/demo.png)
+![Demo](demo.png)
 
 ## Tính năng
 
