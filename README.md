@@ -5,7 +5,7 @@ Dự án được xây dựng theo kiến trúc **client - server**: giao diện
 
 ## Demo
 
-> `![Demo]demo.png`
+> ![Demo]demo.png
 
 ## Kiến trúc
 
