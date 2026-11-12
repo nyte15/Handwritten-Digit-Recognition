@@ -1,5 +1,9 @@
-numpy
 scikit-learn
-joblib
+numpy
 pillow
+joblib
+fastapi
+uvicorn
+python-multipart
+requests
 # pip install ...
